@@ -3552,6 +3552,14 @@ class YoutubeDL(object):
         """ Start an HTTP download """
         if isinstance(req, compat_basestring):
             req = sanitized_Request(req)
+
+        headers = self.params.get("http_headers")
+        if isinstance(headers, dict):
+            for h, v in headers.items():
+                # see YoutubeDLHandler.http_request
+                if h.capitalize() not in req.headers:
+                    req.add_header(h, v)
+
         return self._opener.open(req, timeout=self._socket_timeout)
 
     def print_debug_header(self):
